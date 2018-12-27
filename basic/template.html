@@ -5,11 +5,14 @@
 </style>
 </head>
 <body>
-{% for item in navigation %}
+{% for item in mylist %}
     <div>
-    <img src={{ item.axial }}>
-    <img src={{ item.coronal }}>
-    <img src={{ item.sagittal }}>
+    <img src={{ item.axial_path }}>
+    <img src={{ item.coronal_path }}>
+    <img src={{ item.sagittal_0_path }}>
+    <img src={{ item.sagittal_1_path }}>
+    <br>
+    {{item.file_path}}
     </div>
     <hr>
 {% endfor %}
