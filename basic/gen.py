@@ -14,11 +14,13 @@ parser = argparse.ArgumentParser(description='')
 parser.add_argument('input_folder', type=str)
 parser.add_argument('output_folder', type=str)
 parser.add_argument('-f','--force', type=str, choices=['True','False'],default='False')
+parser.add_argument('-p','--pdf', type=str, choices=['True','False'],default='False')
 
 args = parser.parse_args()
 input_folder = args.input_folder 
 output_folder = args.output_folder
 force = eval(args.force)
+pdf = eval(args.pdf)
 
 # custom logic for visualization
 
@@ -83,16 +85,17 @@ for n,filename in enumerate(file_list):
         sagittal_1_path=os.path.relpath(sagittal_1_path,start=output_folder),
     ))
         
-# content to yml
+# store content to yml, as done file.
 with open(output_content_path,'w') as f:
     f.write(yaml.dump(mylist))
 
-# content jinja to html
+# render html with content via jinja
 j2_env = Environment(loader=FileSystemLoader(THIS_DIR),trim_blocks=True)    
 with open(output_html_path,'w') as f:
     html_content = j2_env.get_template('template.html').render(mylist=mylist)
     f.write(html_content)
 
 # html to pdf
-#import subprocess
-#subprocess.check_output(['wkhtmltopdf',output_html_path,output_pdf_path])
+if pdf:
+    import subprocess
+    subprocess.check_output(['wkhtmltopdf',output_html_path,output_pdf_path])
