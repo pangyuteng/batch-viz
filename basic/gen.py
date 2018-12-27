@@ -94,5 +94,5 @@ with open(output_html_path,'w') as f:
     f.write(html_content)
 
 # html to pdf
-import subprocess
-subprocess.check_output(['wkhtmltopdf',output_html_path,output_pdf_path])
+#import subprocess
+#subprocess.check_output(['wkhtmltopdf',output_html_path,output_pdf_path])
