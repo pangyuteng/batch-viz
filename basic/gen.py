@@ -19,8 +19,8 @@ parser.add_argument('-f','--force', type=str, choices=['True','False'],default='
 parser.add_argument('-p','--pdf', type=str, choices=['True','False'],default='False')
 
 args = parser.parse_args()
-input_folder = args.input_folder 
-output_folder = args.output_folder
+input_folder = os.path.abspath(args.input_folder)
+output_folder = os.path.abspath(args.output_folder)
 force = eval(args.force)
 pdf = eval(args.pdf)
 
