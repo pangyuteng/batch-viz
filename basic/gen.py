@@ -28,7 +28,7 @@ if os.path.exists(output_content_path):
     raise IOError('File exists, not running remaining code! {}'.format(output_content_path))
 
 output_html_path = os.path.join(output_folder,'index.html')
-with open(output_html_path) as f:
+with open(output_html_path,'w') as f:
     html_content = j2_env.get_template(os.path.join(THIS_DIR,'template.html')).render(mylist)
     f.write(html_content)
 
