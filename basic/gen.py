@@ -1,8 +1,12 @@
 import os
 import sys
 
-from jinja2 import Environment, FileSystemLoader
 import argparse
+import yaml
+import SimpleITK as sitk
+from scipy.misc import imsave
+import numpy as np
+from jinja2 import Environment, FileSystemLoader
 
 THIS_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -17,10 +21,6 @@ output_folder = args.output_folder
 force = eval(args.force)
 
 # custom logic for visualization
-import SimpleITK as sitk
-import yaml
-from scipy.misc import imsave
-import numpy as np
 
 def read(fpath):
     reader= sitk.ImageFileReader()
@@ -35,10 +35,12 @@ def read(fpath):
 static_folder = os.path.join(output_folder,'static')
 if not os.path.exists(static_folder):
     os.makedirs(static_folder)
-print('ok')
+
 mylist = []
-for filename in [x for x in os.listdir(input_folder) if x.endswith('.mhd')]:
-    print(filename)
+file_list = [x for x in os.listdir(input_folder) if x.endswith('.mhd')]
+total_n = len(file_list)
+for n,filename in enumerate(file_list):
+    print(filename,n,total_n)
     file_path = os.path.join(input_folder,filename)
     arr,spacing,origin,direction=read(file_path)
     # lung ct window level
@@ -69,27 +71,28 @@ for filename in [x for x in os.listdir(input_folder) if x.endswith('.mhd')]:
     
     mylist.append(dict(
         file_path=file_path,
-        axial_path=axial_path,
-        coronal_path=coronal_path,
-        sagittal_0_path=sagittal_0_path,
-        sagittal_1_path=sagittal_1_path,
+        axial_path=os.path.relpath(axial_path,start=output_folder),
+        coronal_path=os.path.relpath(coronal_path,start=output_folder),
+        sagittal_0_path=os.path.relpath(sagittal_0_path,start=output_folder),
+        sagittal_1_path=os.path.relpath(sagittal_1_path,start=output_folder),
     ))
-    break
-print(mylist,'(*(***')
+    
 output_content_path = os.path.join(output_folder,'output.yml')
+output_html_path = os.path.join(output_folder,'index.html')
+output_pdf_path = os.path.join(output_folder,'index.pdf')
 if os.path.exists(output_content_path) and force is False:
     raise IOError('File exists, not running remaining code! {}'.format(output_content_path))
-
+    
+# content to yml
 with open(output_content_path,'w') as f:
     f.write(yaml.dump(mylist))
 
+# content jinja to html
 j2_env = Environment(loader=FileSystemLoader(THIS_DIR),trim_blocks=True)    
-output_html_path = os.path.join(output_folder,'index.html')
 with open(output_html_path,'w') as f:
-<<<<<<< HEAD
     html_content = j2_env.get_template('template.html').render(mylist=mylist)
-=======
-    html_content = j2_env.get_template(os.path.join(THIS_DIR,'template.html')).render(mylist)
->>>>>>> 5422896b0d14b25bc499123fbc7b9e8b03ee3f84
     f.write(html_content)
 
+# html to pdf
+import subprocess
+subprocess.check_output(['wkhtmltopdf',output_html_path,output_pdf_path])
