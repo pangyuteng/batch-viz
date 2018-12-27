@@ -86,6 +86,10 @@ with open(output_content_path,'w') as f:
 j2_env = Environment(loader=FileSystemLoader(THIS_DIR),trim_blocks=True)    
 output_html_path = os.path.join(output_folder,'index.html')
 with open(output_html_path,'w') as f:
+<<<<<<< HEAD
     html_content = j2_env.get_template('template.html').render(mylist=mylist)
+=======
+    html_content = j2_env.get_template(os.path.join(THIS_DIR,'template.html')).render(mylist)
+>>>>>>> 5422896b0d14b25bc499123fbc7b9e8b03ee3f84
     f.write(html_content)
 
