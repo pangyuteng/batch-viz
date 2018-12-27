@@ -32,10 +32,16 @@ def read(fpath):
     direction = img.GetDirection()    
     return arr,spacing,origin,direction
 
+output_content_path = os.path.join(output_folder,'output.yml')
+output_html_path = os.path.join(output_folder,'index.html')
+output_pdf_path = os.path.join(output_folder,'index.pdf')
+if os.path.exists(output_content_path) and force is False:
+    raise IOError('File exists, not running remaining code! {}'.format(output_content_path))
+
 static_folder = os.path.join(output_folder,'static')
 if not os.path.exists(static_folder):
     os.makedirs(static_folder)
-
+    
 mylist = []
 file_list = [x for x in os.listdir(input_folder) if x.endswith('.mhd')]
 total_n = len(file_list)
@@ -76,13 +82,7 @@ for n,filename in enumerate(file_list):
         sagittal_0_path=os.path.relpath(sagittal_0_path,start=output_folder),
         sagittal_1_path=os.path.relpath(sagittal_1_path,start=output_folder),
     ))
-    
-output_content_path = os.path.join(output_folder,'output.yml')
-output_html_path = os.path.join(output_folder,'index.html')
-output_pdf_path = os.path.join(output_folder,'index.pdf')
-if os.path.exists(output_content_path) and force is False:
-    raise IOError('File exists, not running remaining code! {}'.format(output_content_path))
-    
+        
 # content to yml
 with open(output_content_path,'w') as f:
     f.write(yaml.dump(mylist))
