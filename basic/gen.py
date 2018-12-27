@@ -10,6 +10,8 @@ from jinja2 import Environment, FileSystemLoader
 
 THIS_DIR = os.path.dirname(os.path.abspath(__file__))
 
+# if __name__ == '__main__':
+
 parser = argparse.ArgumentParser(description='')
 parser.add_argument('input_folder', type=str)
 parser.add_argument('output_folder', type=str)
