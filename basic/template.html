@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style type="text/css"> 
+</style>
+</head>
+<body>
+{% for item in navigation %}
+    <div>
+    <img src={{ item.axial }}>
+    <img src={{ item.coronal }}>
+    <img src={{ item.sagittal }}>
+    </div>
+    <hr>
+{% endfor %}
+</body>
+</html>
