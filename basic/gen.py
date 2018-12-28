@@ -63,7 +63,6 @@ if not skip:
     mylist = []
     total_n = len(file_list)
     for n,file_path in enumerate(file_list):
-        break
         filename = os.path.basename(file_path)
         print(filename,n,total_n)
         sagittal_0_path = os.path.join(static_folder,filename+'_sagittal_0.png')
