@@ -7,19 +7,19 @@ import SimpleITK as sitk
 from scipy.misc import imsave
 import numpy as np
 from jinja2 import Environment, FileSystemLoader
+import yaml
 
-THIS_DIR = os.path.dirname(os.path.abspath(__file__))
-
+#THIS_DIR = os.path.dirname(os.path.abspath(__file__))
 # if __name__ == '__main__':
 
 parser = argparse.ArgumentParser(description='')
-parser.add_argument('input_folder', type=str)
+parser.add_argument('input_yml', type=str)
 parser.add_argument('output_folder', type=str)
 parser.add_argument('-f','--force', type=str, choices=['True','False'],default='False')
 parser.add_argument('-p','--pdf', type=str, choices=['True','False'],default='False')
 
 args = parser.parse_args()
-input_folder = os.path.abspath(args.input_folder)
+input_yml = os.path.abspath(args.input_yml)
 output_folder = os.path.abspath(args.output_folder)
 force = eval(args.force)
 pdf = eval(args.pdf)
@@ -45,13 +45,22 @@ if os.path.exists(output_content_path) and force is False:
 static_folder = os.path.join(output_folder,'static')
 if not os.path.exists(static_folder):
     os.makedirs(static_folder)
-    
+
+with open(input_yml,'r') as f:
+    file_list = yaml.load(f.read())
+
+if os.path.exists(os.path.abspath(file_list[0])) is False:
+    folda = os.path.dirname(input_yml)
+    file_list = [os.path.join(folda,x) for x in file_list]
+
+if os.path.exists(os.path.abspath(file_list[0])) is False:
+    raise IOError('cannot find files in input yml!')
+
 mylist = []
-file_list = [x for x in os.listdir(input_folder) if x.endswith('.mhd')]
 total_n = len(file_list)
-for n,filename in enumerate(file_list):
+for n,file_path in enumerate(file_list):
+    filename = os.path.basename(file_path)
     print(filename,n,total_n)
-    file_path = os.path.join(input_folder,filename)
     sagittal_0_path = os.path.join(static_folder,filename+'_sagittal_0.png')
     sagittal_1_path = os.path.join(static_folder,filename+'_sagittal_1.png')
     axial_path = os.path.join(static_folder,filename+'_axial.png')
