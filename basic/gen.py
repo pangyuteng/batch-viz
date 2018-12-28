@@ -13,7 +13,7 @@ import yaml
 THIS_DIR = os.path.dirname(os.path.abspath(__file__))
 BLANKGIF = os.path.join(THIS_DIR,'blank.gif')
 JQUERY = os.path.join(THIS_DIR,'jquery.min.js')
-
+LAZYLOAD = os.path.join(THIS_DIR,'lazyload.js')
 # if __name__ == '__main__':
 
 parser = argparse.ArgumentParser(description='')
@@ -132,9 +132,12 @@ if not os.path.exists(output_content_path) or force is True:
 # render html with content via jinja
 shutil.copy(BLANKGIF,os.path.join(output_folder,'blank.gif'))
 shutil.copy(JQUERY,os.path.join(output_folder,'jquery.min.js'))
+shutil.copy(LAZYLOAD,os.path.join(output_folder,'lazyload.js'))
+
 j2_env = Environment(loader=FileSystemLoader(THIS_DIR),trim_blocks=True)    
 with open(output_html_path,'w') as f:
-    html_content = j2_env.get_template('template.html').render(mylist=mylist,blankgif='blank.gif',jquery='jquery.min.js')
+    html_content = j2_env.get_template('template.html').render(mylist=mylist,
+        blankgif='blank.gif',jquery='jquery.min.js',lazyload='lazyload.js')
     f.write(html_content)
 
 # html to pdf
