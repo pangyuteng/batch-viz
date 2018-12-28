@@ -4,7 +4,7 @@
 
 
   <style>
-    .zone img {
+    .zone {
         margin: 10px 0;
         display: block;
     }
@@ -97,8 +97,8 @@
 <div id="page-wrap">    
     {% for item in mylist %}
         <div class="zone">
-        <img class="lazy" src="./{{ blankgif }}" data-src="./{{ item.contrast_path }}" width="300">
         <img class="lazy" src="./{{ blankgif }}" data-src="./{{ item.axial_path }}" width="300">
+        <img class="lazy" src="./{{ blankgif }}" data-src="./{{ item.contrast_path }}" width="300">
         <img class="lazy" src="./{{ blankgif }}" data-src="./{{ item.coronal_path }}" width="300">
         <img class="lazy" src="./{{ blankgif }}" data-src="./{{ item.sagittal_0_path }}" width="300">
         <img class="lazy" src="./{{ blankgif }}" data-src="./{{ item.sagittal_1_path }}" width="300">
