@@ -52,35 +52,52 @@ total_n = len(file_list)
 for n,filename in enumerate(file_list):
     print(filename,n,total_n)
     file_path = os.path.join(input_folder,filename)
-    arr,spacing,origin,direction=read(file_path)
+    sagittal_0_path = os.path.join(static_folder,filename+'_sagittal_0.png')
+    sagittal_1_path = os.path.join(static_folder,filename+'_sagittal_1.png')
+    axial_path = os.path.join(static_folder,filename+'_axial.png')
+    coronal_path = os.path.join(static_folder,filename+'_coronal.png')
+    contrast_path = os.path.join(static_folder,filename+'_cotrast.png')
+    
+    arr,spacing,origin,direction=read(file_path)    
+    contrast = np.copy(arr)
+
+    contrast[contrast>200] = 0
+    contrast[contrast<100] = 0
+    contrast = np.sum(contrast,axis=1).squeeze()
+    print(contrast.shape)
+    minval = np.min(contrast)
+    maxval = np.max(contrast)
+    contrast = 255*(contrast-minval)/(maxval-minval)
+    contrast = np.clip(contrast,0,255)
+    contrast = contrast.astype(np.uint8)
+    imsave(contrast_path,contrast)
+    
     # lung ct window level
     level = -400.
     window = 1500.
     minval = level-(window/2.)
     maxval = level+(window/2.)
+    
     arr = 255*(arr-minval)/(maxval-minval)
     arr = np.clip(arr,0,255)
     arr = arr.astype(np.uint8)
     mid_x,mid_y,mid_z = (np.array(arr.shape)/2.0).astype(int)
     
     sagittal_0 = arr[:,:,int(1*(mid_z*2/3))].squeeze()
-    sagittal_0_path = os.path.join(static_folder,filename+'_sagittal_0.png')
     imsave(sagittal_0_path,sagittal_0)
     
     sagittal_1 = arr[:,:,int(2*(mid_z*2/3))].squeeze()
-    sagittal_1_path = os.path.join(static_folder,filename+'_sagittal_1.png')
     imsave(sagittal_1_path,sagittal_1)
     
-    axial = arr[:,mid_y,:].squeeze()
-    axial_path = os.path.join(static_folder,filename+'_axial.png')
+    axial = arr[mid_x,:,:].squeeze()
     imsave(axial_path,axial)
 
-    coronal = arr[mid_x,:,:].squeeze()
-    coronal_path = os.path.join(static_folder,filename+'_coronal.png')
+    coronal = arr[:,mid_y,:].squeeze()
     imsave(coronal_path,coronal)
     
     mylist.append(dict(
         file_path=file_path,
+        contrast_path=os.path.relpath(contrast_path,start=output_folder),
         axial_path=os.path.relpath(axial_path,start=output_folder),
         coronal_path=os.path.relpath(coronal_path,start=output_folder),
         sagittal_0_path=os.path.relpath(sagittal_0_path,start=output_folder),
