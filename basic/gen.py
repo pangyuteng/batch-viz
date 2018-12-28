@@ -74,7 +74,7 @@ if not skip:
         axial_path = os.path.join(static_folder,filename+'_axial.png')
         coronal_path = os.path.join(static_folder,filename+'_coronal.png')
         contrast_path = os.path.join(static_folder,filename+'_cotrast.png')
-        '''
+        
         arr,spacing,origin,direction=read(file_path)    
         contrast = np.copy(arr)
 
@@ -111,7 +111,7 @@ if not skip:
 
         coronal = arr[:,mid_y,:].squeeze()
         imsave(coronal_path,coronal)
-        '''
+        
         mylist.append(dict(
             file_path=file_path,
             contrast_path=os.path.relpath(contrast_path,start=output_folder),
