@@ -76,6 +76,7 @@ if not skip:
         contrast_path = os.path.join(static_folder,filename+'_cotrast.png')
         
         arr,spacing,origin,direction=read(file_path)    
+
         contrast = np.copy(arr)
 
         contrast[contrast>200] = 0
@@ -119,6 +120,9 @@ if not skip:
             coronal_path=os.path.relpath(coronal_path,start=output_folder),
             sagittal_0_path=os.path.relpath(sagittal_0_path,start=output_folder),
             sagittal_1_path=os.path.relpath(sagittal_1_path,start=output_folder),
+            spacing=spacing,
+            origin=origin,
+            direction=direction,
         ))
 else:
     with open(output_content_path,'r') as f:
