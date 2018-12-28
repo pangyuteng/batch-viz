@@ -1,6 +1,6 @@
 import os
 import sys
-
+import shutil
 import argparse
 import yaml
 import SimpleITK as sitk
@@ -9,7 +9,11 @@ import numpy as np
 from jinja2 import Environment, FileSystemLoader
 import yaml
 
+# THIS_DIR used by jinja2 to locate template.html
 THIS_DIR = os.path.dirname(os.path.abspath(__file__))
+BLANKGIF = os.path.join(THIS_DIR,'blank.gif')
+JQUERY = os.path.join(THIS_DIR,'jquery.min.js')
+
 # if __name__ == '__main__':
 
 parser = argparse.ArgumentParser(description='')
@@ -70,7 +74,7 @@ if not skip:
         axial_path = os.path.join(static_folder,filename+'_axial.png')
         coronal_path = os.path.join(static_folder,filename+'_coronal.png')
         contrast_path = os.path.join(static_folder,filename+'_cotrast.png')
-        
+        '''
         arr,spacing,origin,direction=read(file_path)    
         contrast = np.copy(arr)
 
@@ -107,7 +111,7 @@ if not skip:
 
         coronal = arr[:,mid_y,:].squeeze()
         imsave(coronal_path,coronal)
-        
+        '''
         mylist.append(dict(
             file_path=file_path,
             contrast_path=os.path.relpath(contrast_path,start=output_folder),
@@ -125,12 +129,12 @@ if not os.path.exists(output_content_path) or force is True:
     with open(output_content_path,'w') as f:
         f.write(yaml.dump(mylist))
 
-
-
 # render html with content via jinja
+shutil.copy(BLANKGIF,os.path.join(output_folder,'blank.gif'))
+shutil.copy(JQUERY,os.path.join(output_folder,'jquery.min.js'))
 j2_env = Environment(loader=FileSystemLoader(THIS_DIR),trim_blocks=True)    
 with open(output_html_path,'w') as f:
-    html_content = j2_env.get_template('template.html').render(mylist=mylist)
+    html_content = j2_env.get_template('template.html').render(mylist=mylist,blankgif='blank.gif',jquery='jquery.min.js')
     f.write(html_content)
 
 # html to pdf
